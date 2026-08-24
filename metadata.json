@@ -1,0 +1,6 @@
+{
+  "name": "PolySwarm Game Studio",
+  "description": "Multi-AI collaborative game engine and WebGL IDE that distributes workloads across specialized AI workers to build high-performance browser games while minimizing token burn.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
