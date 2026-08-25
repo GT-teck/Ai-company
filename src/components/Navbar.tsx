@@ -11,7 +11,9 @@ import {
   Layers,
   Zap,
   HelpCircle,
-  ExternalLink
+  ExternalLink,
+  FolderArchive,
+  Save
 } from 'lucide-react';
 import { GameProject, GameTemplate, ViewTab, TokenTelemetry } from '../types';
 import { GAME_TEMPLATES } from '../data/templates';
@@ -25,6 +27,7 @@ interface NavbarProps {
   onOpenExport: () => void;
   onOpenTokenModal: () => void;
   onOpenProfiler: () => void;
+  onOpenVault: () => void;
   telemetry: TokenTelemetry;
   isGenerating: boolean;
 }
@@ -38,6 +41,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   onOpenExport,
   onOpenTokenModal,
   onOpenProfiler,
+  onOpenVault,
   telemetry,
   isGenerating,
 }) => {
@@ -178,6 +182,22 @@ export const Navbar: React.FC<NavbarProps> = ({
             ))}
           </div>
         </div>
+
+        {/* Project Vault / Save Button */}
+        <button
+          id="btn-project-vault"
+          onClick={onOpenVault}
+          className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-slate-900 hover:bg-slate-800 border border-slate-750 text-slate-200 hover:text-cyan-300 transition-colors text-xs font-medium"
+          title="Project Vault: Save, Load, Fork, Checkpoints & JSON Export"
+        >
+          <FolderArchive className="w-3.5 h-3.5 text-cyan-400" />
+          <span className="hidden md:inline">Vault</span>
+          {currentProject.history && currentProject.history.length > 0 && (
+            <span className="text-[9px] px-1 py-0.2 rounded-full bg-cyan-950 text-cyan-300 font-mono font-bold">
+              v{currentProject.version || 1}
+            </span>
+          )}
+        </button>
 
         {/* Export / Download */}
         <button

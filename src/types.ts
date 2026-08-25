@@ -43,6 +43,16 @@ export interface GameFiles {
   [filename: string]: string | undefined;
 }
 
+export interface ProjectVersionCheckpoint {
+  id: string;
+  version: number;
+  prompt?: string;
+  timestamp: number;
+  html: string;
+  files?: GameFiles;
+  summary?: string;
+}
+
 export interface GameProject {
   id: string;
   title: string;
@@ -58,6 +68,8 @@ export interface GameProject {
   prompt: string;
   version: number;
   author: string;
+  history?: ProjectVersionCheckpoint[];
+  isSaved?: boolean;
 }
 
 export interface GameTemplate {

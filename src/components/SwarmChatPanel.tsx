@@ -25,10 +25,13 @@ interface SwarmChatPanelProps {
     enableSpatialAudio: boolean;
     enablePostProcessing: boolean;
     enableParticleSwarm: boolean;
+    isModificationMode?: boolean;
+    detailLevel?: 'high' | 'ultra' | 'maximum';
   }) => void;
   isGenerating: boolean;
   telemetry: TokenTelemetry;
   agents: SwarmAgent[];
+  currentProjectTitle: string;
 }
 
 export const SwarmChatPanel: React.FC<SwarmChatPanelProps> = ({
@@ -37,21 +40,29 @@ export const SwarmChatPanel: React.FC<SwarmChatPanelProps> = ({
   isGenerating,
   telemetry,
   agents,
+  currentProjectTitle,
 }) => {
   const [prompt, setPrompt] = useState('');
+  const [isModificationMode, setIsModificationMode] = useState(false);
   const [complexity, setComplexity] = useState<'standard' | 'high' | 'extreme'>('extreme');
+  const [detailLevel, setDetailLevel] = useState<'high' | 'ultra' | 'maximum'>('maximum');
   const [targetFps, setTargetFps] = useState<number>(60);
   const [enableSpatialAudio, setEnableSpatialAudio] = useState(true);
   const [enablePostProcessing, setEnablePostProcessing] = useState(true);
   const [enableParticleSwarm, setEnableParticleSwarm] = useState(true);
   const [showSettings, setShowSettings] = useState(false);
 
-  const quickPromptChips = [
-    'Add 50,000 GPU particle shockwaves on laser impact',
-    'Add boss battle with 3 bullet-hell spiral attack phases',
-    'Add dynamic screen shake, chromatic aberration, and neon bloom',
-    'Add procedural Web Audio synth chords and bassline on combos',
-    'Add time-dilation bullet-time effect on close dodging',
+  const quickPromptChips = isModificationMode ? [
+    'Add a multi-phase mothership boss with health bar',
+    'Add 3 switchable weapons (Pulse, Missiles, EMP)',
+    'Add XP orbs & mid-game perk upgrade selector',
+    'Add circular radar minimap & combo counter',
+    'Add synthwave bassline & dynamic explosion sound FX',
+  ] : [
+    '3D Space dogfight with 35k particles & synth audio',
+    'Neon cyber racer with drifting & procedural highway',
+    'Quantum bullet-hell boss fight with GPU physics',
+    'Voxel raymarching universe with dynamic lighting',
   ];
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -63,6 +74,8 @@ export const SwarmChatPanel: React.FC<SwarmChatPanelProps> = ({
       enableSpatialAudio,
       enablePostProcessing,
       enableParticleSwarm,
+      isModificationMode,
+      detailLevel,
     });
     setPrompt('');
   };
@@ -74,7 +87,7 @@ export const SwarmChatPanel: React.FC<SwarmChatPanelProps> = ({
   return (
     <div className="w-full md:w-80 lg:w-96 flex flex-col h-full bg-slate-950 border-r border-slate-800/80 shrink-0 select-none">
       {/* Header with Swarm Status */}
-      <div className="p-3.5 border-b border-slate-800/80 bg-slate-950/60 flex items-center justify-between">
+      <div className="p-3 border-b border-slate-800/80 bg-slate-950/80 flex items-center justify-between">
         <div className="flex items-center gap-2">
           <div className="relative">
             <Bot className="w-4 h-4 text-cyan-400" />
@@ -83,11 +96,11 @@ export const SwarmChatPanel: React.FC<SwarmChatPanelProps> = ({
           </div>
           <div>
             <div className="text-xs font-bold text-slate-200">Swarm Orchestrator</div>
-            <div className="text-[10px] text-slate-400 font-mono">4 Specialized Agents Ready</div>
+            <div className="text-[10px] text-slate-400 font-mono">Multi-AI Limit Pushers</div>
           </div>
         </div>
 
-        {/* Token Throttle Toggle */}
+        {/* Tuning Toggle */}
         <button
           onClick={() => setShowSettings(!showSettings)}
           className={`flex items-center gap-1 px-2 py-1 rounded-md text-[11px] font-mono border transition-all ${
@@ -97,16 +110,75 @@ export const SwarmChatPanel: React.FC<SwarmChatPanelProps> = ({
           }`}
         >
           <Sliders className="w-3 h-3" />
-          <span>Tuning</span>
+          <span>Detail Tuning</span>
           {showSettings ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />}
         </button>
       </div>
 
-      {/* Hardware Limits & Swarm Settings Drawer */}
+      {/* Mode Switcher: New Game vs Make Changes / Refine */}
+      <div className="p-2 bg-slate-900/90 border-b border-slate-800/80 flex items-center gap-1">
+        <button
+          type="button"
+          onClick={() => setIsModificationMode(false)}
+          className={`flex-1 py-1.5 px-2 rounded-lg text-xs font-semibold flex items-center justify-center gap-1.5 transition-all ${
+            !isModificationMode
+              ? 'bg-gradient-to-r from-cyan-500 to-indigo-600 text-white shadow-sm shadow-cyan-500/20'
+              : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/50'
+          }`}
+        >
+          <Sparkles className="w-3.5 h-3.5" />
+          <span>New Game</span>
+        </button>
+
+        <button
+          type="button"
+          onClick={() => setIsModificationMode(true)}
+          className={`flex-1 py-1.5 px-2 rounded-lg text-xs font-semibold flex items-center justify-center gap-1.5 transition-all ${
+            isModificationMode
+              ? 'bg-gradient-to-r from-indigo-500 to-rose-600 text-white shadow-sm shadow-rose-500/20'
+              : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/50'
+          }`}
+        >
+          <Zap className="w-3.5 h-3.5" />
+          <span>Make Changes</span>
+        </button>
+      </div>
+
+      {isModificationMode && (
+        <div className="px-3 py-1.5 bg-rose-950/30 border-b border-rose-900/30 text-[10px] font-mono text-rose-300 flex items-center justify-between">
+          <span className="truncate">🎯 Modifying: <strong>{currentProjectTitle}</strong></span>
+          <span className="shrink-0 text-rose-400 font-bold">Incremental Diff</span>
+        </div>
+      )}
+
+      {/* Detail Tuning & Swarm Settings Drawer */}
       {showSettings && (
-        <div className="p-3.5 bg-slate-900/90 border-b border-slate-800 space-y-3 text-xs">
+        <div className="p-3.5 bg-slate-900/95 border-b border-slate-800 space-y-3 text-xs">
           <div className="flex items-center justify-between">
-            <span className="text-slate-300 font-medium">Browser Limits Level</span>
+            <span className="text-slate-300 font-medium flex items-center gap-1">
+              <Sparkles className="w-3 h-3 text-cyan-400" />
+              <span>Game Detail Level</span>
+            </span>
+            <div className="flex gap-1 font-mono text-[10px]">
+              {(['high', 'ultra', 'maximum'] as const).map((lvl) => (
+                <button
+                  key={lvl}
+                  type="button"
+                  onClick={() => setDetailLevel(lvl)}
+                  className={`px-2 py-0.5 rounded capitalize font-bold transition-all ${
+                    detailLevel === lvl
+                      ? 'bg-gradient-to-r from-cyan-500 to-indigo-500 text-white shadow-sm'
+                      : 'bg-slate-800 text-slate-400 hover:text-slate-200'
+                  }`}
+                >
+                  {lvl}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div className="flex items-center justify-between">
+            <span className="text-slate-300 font-medium">Complexity Tier</span>
             <div className="flex gap-1">
               {(['standard', 'high', 'extreme'] as const).map((lvl) => (
                 <button
@@ -125,29 +197,9 @@ export const SwarmChatPanel: React.FC<SwarmChatPanelProps> = ({
             </div>
           </div>
 
-          <div className="flex items-center justify-between">
-            <span className="text-slate-300 font-medium">Target FPS</span>
-            <div className="flex gap-1 font-mono text-[10px]">
-              {[60, 120].map((fps) => (
-                <button
-                  key={fps}
-                  type="button"
-                  onClick={() => setTargetFps(fps)}
-                  className={`px-2 py-0.5 rounded font-bold transition-all ${
-                    targetFps === fps
-                      ? 'bg-indigo-500 text-white'
-                      : 'bg-slate-800 text-slate-400'
-                  }`}
-                >
-                  {fps} FPS
-                </button>
-              ))}
-            </div>
-          </div>
-
           <div className="pt-2 border-t border-slate-800/80 space-y-2">
             <label className="flex items-center justify-between text-slate-300 cursor-pointer">
-              <span className="text-[11px]">GPU Particle Swarm (10k-50k)</span>
+              <span className="text-[11px]">30,000+ GPU Particle Swarm</span>
               <input
                 type="checkbox"
                 checked={enableParticleSwarm}
@@ -156,7 +208,7 @@ export const SwarmChatPanel: React.FC<SwarmChatPanelProps> = ({
               />
             </label>
             <label className="flex items-center justify-between text-slate-300 cursor-pointer">
-              <span className="text-[11px]">Procedural Web Audio Synth</span>
+              <span className="text-[11px]">Procedural Synth Bassline & SFX</span>
               <input
                 type="checkbox"
                 checked={enableSpatialAudio}
@@ -165,7 +217,7 @@ export const SwarmChatPanel: React.FC<SwarmChatPanelProps> = ({
               />
             </label>
             <label className="flex items-center justify-between text-slate-300 cursor-pointer">
-              <span className="text-[11px]">Glow & Bloom Shaders</span>
+              <span className="text-[11px]">Bloom Post-Processing & Lighting</span>
               <input
                 type="checkbox"
                 checked={enablePostProcessing}

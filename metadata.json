@@ -1,6 +1,6 @@
 {
-  "name": "PolySwarm Game Studio",
-  "description": "Multi-AI collaborative game engine and WebGL IDE that distributes workloads across specialized AI workers to build high-performance browser games while minimizing token burn.",
+  "name": "AI Company Evolution Simulator",
+  "description": "WebGL 3D isometric company evolution simulator powered by autonomous learning AI agents, dynamic reinforcement learning, emerging hierarchy, stock market dynamics, and interactive player governance.",
   "requestFramePermissions": [],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
 }
